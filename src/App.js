@@ -5,16 +5,18 @@ import RoomList  from './components/RoomList.js';
 
 
 
-// Initialize Firebase
-var config = {
-  apiKey: "AIzaSyBS3yYPiT9-MJuj2NbsUhvozJ78Grgt9kc",
-  authDomain: "bloc-chat-react-1f5db.firebaseapp.com",
-  databaseURL: "https://bloc-chat-react-1f5db.firebaseio.com",
-  projectId: "bloc-chat-react-1f5db",
-  storageBucket: "bloc-chat-react-1f5db.appspot.com",
-  messagingSenderId: "764220800865"
-};
-firebase.initializeApp(config);
+
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBxshVlcMuweB2kRlg_4BEC0zcjyK1n0jA",
+    authDomain: "bloc-chat-react-ec930.firebaseapp.com",
+    databaseURL: "https://bloc-chat-react-ec930.firebaseio.com",
+    projectId: "bloc-chat-react-ec930",
+    storageBucket: "",
+    messagingSenderId: "389456100708"
+  };
+  firebase.initializeApp(config);
 
 class App extends Component {
 
