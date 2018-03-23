@@ -29,19 +29,23 @@ class RoomList extends Component {
       const room = snapshot.val();
       room.key = snapshot.key;
       this.setState({ rooms: this.state.rooms.concat( room ) })
-      console.log('hey');
+
     });
+  }
+
+  selectRoom(room) {
+    this.props.activeRoom(room);
   }
 
   render() {
     const roomForm = (
       <form onSubmit={this.createRoom}>
-      <input type="text" value={this.state.newRoomName} placeholder="Enter Room Name" onChange={this.handleChange}/>
+      <input type="text" value={this.state.name} placeholder="Enter Room Name" onChange={this.handleChange}/>
       <input type="submit" value="Create" />
       </form>
     )
     const roomList = this.state.rooms.map((room) =>
-      <li key={room.key}>{room.name}</li>
+      <li key={room.key} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li>
   );
   return (
     <div>
