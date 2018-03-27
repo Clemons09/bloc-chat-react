@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import './App.css';
 import * as firebase from 'firebase';
-import RoomList  from './components/RoomList.js';
+import './App.css';
+import RoomList from './components/RoomList.js';
 import MessageList from './components/MessageList.js';
+import User from './components/User.js'
 
 
-
-
-
-  // Initialize Firebase
+// Initialize Firebase
   var config = {
     apiKey: "AIzaSyBxshVlcMuweB2kRlg_4BEC0zcjyK1n0jA",
     authDomain: "bloc-chat-react-ec930.firebaseapp.com",
@@ -19,31 +17,38 @@ import MessageList from './components/MessageList.js';
   };
   firebase.initializeApp(config);
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {activeRoom: ""};
-    this.activeRoom = this.activeRoom.bind(this);
+  class App extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        activeRoom: null,
+        user: null
+      }
+    }
+
+    setUser(user) {
+      this.setState({ user: user });
+    }
+
+    changeRoom(room) {
+      this.setState({activeRoom: room})
+    }
+
+    render() {
+      return (
+        <div className="App">
+          <aside align="left" id="sidebar">
+            <RoomList firebase={firebase} activeRoom={this.state.activeRoom} changeRoom={this.changeRoom.bind(this)} />
+            <User firebase={firebase} setUser={this.setUser.bind(this)} user={this.state.user} />
+          </aside>
+          <section className="message-list">
+            <main>
+              <MessageList firebase={firebase} activeRoom={this.state.activeRoom}/>
+            </main>
+          </section>
+        </div>
+      );
+    }
   }
 
-  activeRoom(room) {
-    this.setState({ activeRoom: room })
-  }
-
-
-  render() {
-    const showMessages = this.state.activeRoom;
-    return (
-    <div className="App">
-        <h1>{this.state.activeRoom.newRoomName || "Select A Room"}</h1>
-        <RoomList firebase = {firebase} activeRoom={this.activeRoom} />
-        { showMessages ?
-          (<MessageList firebase={firebase} activeRoom={this.state.activeRoom.key}/>)
-          : (null)
-        }
-    </div>
-    );
-  }
-}
-
-export default App;
+  export default App;
