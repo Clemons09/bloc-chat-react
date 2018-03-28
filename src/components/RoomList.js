@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class RoomList extends Component {
+class RoomList extends Component {
  constructor(props) {
    super(props);
      this.state = {title: "", rooms: []};
@@ -51,3 +51,5 @@ export class RoomList extends Component {
    );
  }
 }
+
+export default RoomList;

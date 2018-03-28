@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class MessageList extends Component {
+class MessageList extends Component {
   constructor(props) {
     super(props);
       this.state = { username: "", content: "", sentAt: "", roomId: "", messages: []}
@@ -65,3 +65,5 @@ export class MessageList extends Component {
     );
   }
 }
+
+export default MessageList;

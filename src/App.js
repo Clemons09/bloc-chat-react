@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+//import './App.css';
 import * as firebase from 'firebase';
-import './App.css';
 import RoomList from './components/RoomList.js';
 import MessageList from './components/MessageList.js';
-import User from './components/User.js'
+import User from './components/User.js';
 
 
 // Initialize Firebase
@@ -18,37 +18,37 @@ import User from './components/User.js'
   firebase.initializeApp(config);
 
   class App extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        activeRoom: null,
-        user: null
-      }
-    }
-
-    setUser(user) {
-      this.setState({ user: user });
-    }
-
-    changeRoom(room) {
-      this.setState({activeRoom: room})
-    }
-
-    render() {
-      return (
-        <div className="App">
-          <aside align="left" id="sidebar">
-            <RoomList firebase={firebase} activeRoom={this.state.activeRoom} changeRoom={this.changeRoom.bind(this)} />
-            <User firebase={firebase} setUser={this.setUser.bind(this)} user={this.state.user} />
-          </aside>
-          <section className="message-list">
-            <main>
-              <MessageList firebase={firebase} activeRoom={this.state.activeRoom}/>
-            </main>
-          </section>
-        </div>
-      );
-    }
+  constructor(props) {
+    super(props);
+    this.state = {activeRoom: ""};
+    this.activeRoom = this.activeRoom.bind(this);
+    this.setUser = this.setUser.bind(this);
   }
 
-  export default App;
+activeRoom(room) {
+  this.setState({ activeRoom: room })
+}
+
+setUser(user) {
+  this.setState({ user: user });
+}
+
+  render() {
+    const showMessages = this.state.activeRoom;
+    const currentUser = !this.state.user ? "Guest" : this.state.user.displayName;
+
+    return (
+      <div>
+        <h1>{this.state.activeRoom.title || "Select A Room"}</h1>
+        <RoomList firebase={firebase} activeRoom={this.activeRoom} />
+        <User firebase={firebase} setUser={this.setUser} welcome={currentUser} />
+        { showMessages ?
+          <MessageList firebase={firebase} activeRoom={this.state.activeRoom.key} user={this.state.user.displayName} />
+        : null
+        }
+      </div>
+    );
+  }
+}
+
+export default App;
