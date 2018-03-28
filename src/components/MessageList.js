@@ -30,10 +30,17 @@ class MessageList extends Component {
     this.setState({ username: "", content: "", sentAt: "", roomId: "" });
   }
 
+  deleteMessage(messageKey) {
+    const message = this.props.firebase.database().ref('messages' + messageKey);
+    message.remove()
+    const remainMessages = this.state.messages
+    .filter(message => message.key !== messageKey);
+    this.setState({ messages: remainMessages });
+  }
+
   componentDidMount() {
     this.messagesRef.on('child_added', snapshot => {
       const message = snapshot.val();
-      console.log(message);
       this.setState({ messages: this.state.messages.concat(message) })
     });
   }
@@ -51,7 +58,9 @@ class MessageList extends Component {
     const messageList = (
       this.state.messages.map((message) => {
         if (message.roomId === activeRoom) {
-          return <li key={message.key}>{message.username}: {message.content}</li>
+          return <li key={message.key}>{message.username}: {message.content}
+            <button id="delete-message" onClick={() => this.deleteMessage(message.key)}>Delete</button>
+          </li>
         }
         return null;
       })

@@ -1,55 +1,82 @@
 import React, { Component } from 'react';
+import './../App.css';
+
 
 class RoomList extends Component {
- constructor(props) {
-   super(props);
-     this.state = {title: "", rooms: []};
-     this.roomsRef = this.props.firebase.database().ref("rooms");
-     this.handleChange = this.handleChange.bind(this);
-     this.createRoom = this.createRoom.bind(this);
- }
+    constructor (props) {
+        super(props)
 
- handleChange(e) {
-   this.setState({ title: e.target.value });
- }
+        this.state = {
+            rooms: [],
+            newRoomName: '',
+            name: ''
+        };
 
- createRoom(e) {
-   e.preventDefault();
-   this.roomsRef.push({ title: this.state.title });
-   this.setState({ title: "" });
- }
+        this.roomsRef = this.props.firebase.database().ref('rooms');
+    };
 
- componentDidMount() {
-   this.roomsRef.on('child_added', snapshot => {
-     const room = snapshot.val();
-     room.key = snapshot.key;
-     this.setState({ rooms: this.state.rooms.concat(room) })
-   });
- }
+        componentDidMount() {
+        this.roomsRef.on('child_added', snapshot => {
+            const room = snapshot.val();
+            room.key = snapshot.key;
+            this.setState({ rooms: this.state.rooms.concat(room) });
+        });
 
- selectRoom(room) {
-   this.props.activeRoom(room);
- }
+    }
 
- render() {
-   const roomForm = (
-     <form onSubmit={this.createRoom}>
-       <input type="text" value={this.state.title} placeholder="Enter Room Name" onChange={this.handleChange}/>
-       <input type="submit" value="Create" />
-     </form>
-   );
+    handleChange(e) {
+        this.setState({ newRoomName: e.target.value });
+    }
 
-   const roomList = this.state.rooms.map((room) =>
-     <li key={room.key} onClick={(e) => this.selectRoom(room, e)}>{room.title}</li>
-   );
+    handleSubmit(e) {
+        e.preventDefault();
+        if (!this.state.newRoomName) { return }
+    }
 
-   return(
-     <div>
-       <div>{roomForm}</div>
-       <ul>{roomList}</ul>
-     </div>
-   );
- }
-}
+    createRoom() {
+        this.roomsRef.push({
+            name: this.state.newRoomName
+        });
+
+    }
+
+    selectRoom(key){
+        this.props.activeRoom(key);
+    }
+
+    deleteRoom(roomKey) {
+            console.log('trying to delete room', roomKey)
+            const room = this.props.firebase.database().ref('rooms' + roomKey);
+            room.remove()
+            const remainRooms= this.state.rooms
+            .filter(room => room.key !== roomKey);
+            this.setState({ rooms: remainRooms});
+        }
+
+        render() {
+            return (
+                <section className= "room-list">
+                    <div className= "list-names">
+                        <ul>
+                            {this.state.rooms.map( (room) => {
+                            return (
+                                <div key={room.key} onClick={(e) => this.selectRoom(room, e)}> {room.name}
+                                <button id="deleteRoom" onClick={() => this.deleteRoom(room.key)}>Delete</button>
+                                </div>
+
+                            )
+                            })}
+                        <form onSubmit={(e) => this.handleSubmit(e)}>
+                            <input type="text" name="newroom" placeholder="New Room" value={this.state.newRoom} onChange={(e) => this.handleChange(e)} />
+                            <button type="submit" onClick={() => this.createRoom()}>Create Room</button>
+                        </form>
+                        </ul>
+                    </div>
+                </section>
+        );
+        }
+
+    }
+
 
 export default RoomList;
